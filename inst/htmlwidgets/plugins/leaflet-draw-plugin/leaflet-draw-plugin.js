@@ -53,6 +53,9 @@ LeafletWidget.methods.addDrawToolbar = function(layerID,group,position,polyline,
   var prefix = this.id + "_" + layerID + "_";
   this.on('draw:created', function (e) {
     var layer = e.layer;
+    var shape = layer.toGeoJSON();
+    var shape_for_db = JSON.stringify(shape);
+
 		drawnItems.addLayer(layer);
 		if (e.layerType === "circle") {
 		  e.layer.feature = {properties: {radius: e.layer.getRadius()}};
@@ -60,6 +63,7 @@ LeafletWidget.methods.addDrawToolbar = function(layerID,group,position,polyline,
     if (!HTMLWidgets.shinyMode) return;
     Shiny.onInputChange(prefix + "created", layer.toGeoJSON());
     Shiny.onInputChange(prefix + "features", drawnItems.toGeoJSON());
+    Shiny.onInputChange("geojson_coords",shape_for_db);
   });
 
   if (HTMLWidgets.shinyMode) {
